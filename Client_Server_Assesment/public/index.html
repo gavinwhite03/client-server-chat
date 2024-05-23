@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Application</title>
+</head>
+<body>
+    <h1>Chat Log</h1>
+    <ul id="chatLog"></ul>
+
+    <form id="saveForm">
+        <input type="text" name="fileName" placeholder="Enter file name" />
+        <button type="submit">Save Chat</button>
+    </form>
+
+    <script>
+        fetch('/')
+            .then(response => response.text())
+            .then(html => {
+                const chatLogElement = document.getElementById('chatLog');
+                chatLogElement.innerHTML = html.match(/<ul>([\s\S]*)<\/ul>/)[1];
+            });
+
+        const saveForm = document.getElementById('saveForm');
+        saveForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const fileName = event.target.elements.fileName.value;
+            fetch(`/save-chat?fileName=${fileName}`, { method: 'POST' })
+                .then(response => response.text())
+                .then(message => alert(message));
+        });
+    </script>
+</body>
+</html>
